@@ -26,6 +26,7 @@ import org.opensearch.client.*;
 import org.opensearch.common.xcontent.XContentFactory;
 import org.opensearch.common.xcontent.XContentHelper;
 import org.opensearch.common.xcontent.XContentType;
+import org.opensearch.core.action.ActionListener;
 import org.opensearch.core.rest.RestStatus;
 import org.opensearch.core.xcontent.DeprecationHandler;
 import org.opensearch.core.xcontent.MediaType;
@@ -193,11 +194,51 @@ public abstract class BaseAgentToolsIT extends OpenSearchSecureRestTestCase {
         makeRequest(client(), "DELETE", "/_plugins/_ml/models/" + modelId, null, (String) null, null);
     }
 
-    protected void createIndexWithConfiguration(String indexName, String indexConfiguration) throws Exception {
-        Response response = makeRequest(client(), "PUT", indexName, null, indexConfiguration, null);
-        Map<String, Object> responseInMap = parseResponseToMap(response);
-        assertEquals("true", responseInMap.get("acknowledged").toString());
-        assertEquals(indexName, responseInMap.get("index").toString());
+    protected void createIndexWithConfiguration(String indexName, String indexConfiguration) {
+        ResponseListener responseListener = new ResponseListener() {
+            @Override
+            public void onSuccess(Response response) {
+
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                Response response = makeRequest(client(), "PUT", indexName, null, indexConfiguration, null);
+                Map<String, Object> responseInMap = parseResponseToMap(response);
+                assertEquals("true", responseInMap.get("acknowledged").toString());
+                assertEquals(indexName, responseInMap.get("index").toString());
+            }
+        };
+       adminClient().performRequestAsync(new Request("GET", indexName), responseListener);
+    }
+
+    public void deleteAllDataInIndex(String indexName) {
+        ResponseListener responseListener = new ResponseListener() {
+            @Override
+            public void onSuccess(Response response) {
+                String matchAllQuery = "{\n" + "  \"query\": {\n" + "    \"match_all\": {}\n" + "  }\n" + "}";
+                Request request = new Request("POST", indexName + "/_delete_by_query?refresh");
+                request.setJsonEntity(matchAllQuery);
+                try {
+                    Response res = adminClient().performRequest(request);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+
+            }
+        };
+        adminClient().performRequestAsync(new Request("GET", indexName), responseListener);
+    }
+
+    protected void updateMappings(String indexName, String indexConfiguration) throws IOException {
+        Request request = new Request("PUT", indexName + "/_mapping");
+        request.setJsonEntity(indexConfiguration);
+        Response response = adminClient().performRequest(request);
+        System.out.println(String.format("update index mapping complete, http response is: %s", response.getStatusLine()));
     }
 
     // Similar to deleteExternalIndices, but including indices with "." prefix vs. excluding them
@@ -252,7 +293,6 @@ public abstract class BaseAgentToolsIT extends OpenSearchSecureRestTestCase {
         assertEquals(RestStatus.CREATED, RestStatus.fromCode(response.getStatusLine().getStatusCode()));
     }
 
-    @SneakyThrows
     protected void addDocToIndex(String indexName, String docId, String contents) {
         Response response = makeRequest(client(), "POST", "/" + indexName + "/_doc/" + docId + "?refresh=true", null, contents, null);
         assertEquals(RestStatus.CREATED, RestStatus.fromCode(response.getStatusLine().getStatusCode()));
