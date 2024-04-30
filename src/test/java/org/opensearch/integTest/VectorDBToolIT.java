@@ -40,6 +40,7 @@ public class VectorDBToolIT extends BaseAgentToolsIT {
                     )
             );
         modelId = registerModelThenDeploy(requestBody);
+        assertNotNull(modelId);
     }
 
     @SneakyThrows

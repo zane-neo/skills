@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -156,7 +157,7 @@ public abstract class ToolIntegrationTest extends BaseAgentToolsIT {
     }
 
     private String setupLLMModel(String connectorId, String modelGroupId) throws IOException {
-        Request request = new Request("POST", "/_plugins/_ml/models/_register?deploy=true");
+        Request request = new Request("POST", "/_plugins/_ml/models/_register");
         request
             .setJsonEntity(
                 "{\n"
@@ -174,8 +175,12 @@ public abstract class ToolIntegrationTest extends BaseAgentToolsIT {
         Response response = executeRequest(request);
 
         String resp = readResponse(response);
-
-        return JsonParser.parseString(resp).getAsJsonObject().get("model_id").getAsString();
+        String llmModelId = JsonParser.parseString(resp).getAsJsonObject().get("model_id").getAsString();
+        String taskId = deployModel(llmModelId);
+        Map<String, Object> responseInMap = waitTaskComplete(taskId);
+        System.out.println("################### responseInMap: " + responseInMap);
+        assertNotNull(llmModelId);
+        return llmModelId;
     }
 
     private String setupConversationalAgent(String modelId) throws IOException {

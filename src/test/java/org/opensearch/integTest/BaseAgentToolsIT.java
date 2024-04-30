@@ -92,6 +92,10 @@ public abstract class BaseAgentToolsIT extends OpenSearchSecureRestTestCase {
         return responseInMap;
     }
 
+    private Map<String, Object> parseResponseToMap(String response) {
+        return XContentHelper.convertToMap(XContentType.JSON.xContent(), response, false);
+    }
+
     @SneakyThrows
     private Object parseFieldFromResponse(Response response, String field) {
         assertNotNull(field);
@@ -102,6 +106,7 @@ public abstract class BaseAgentToolsIT extends OpenSearchSecureRestTestCase {
     }
 
     protected String createConnector(String requestBody) {
+        System.out.println("########### requestBody: " + requestBody);
         Response response = makeRequest(client(), "POST", "/_plugins/_ml/connectors/_create", null, requestBody, null);
         assertEquals(RestStatus.OK, RestStatus.fromCode(response.getStatusLine().getStatusCode()));
         return parseFieldFromResponse(response, MLModel.CONNECTOR_ID_FIELD).toString();
@@ -184,9 +189,15 @@ public abstract class BaseAgentToolsIT extends OpenSearchSecureRestTestCase {
         for (int i = 0; i < MAX_TASK_RESULT_QUERY_TIME_IN_SECOND; i++) {
             Response response = makeRequest(client(), method, endpoint, null, jsonEntity, null);
             assertEquals(RestStatus.OK, RestStatus.fromCode(response.getStatusLine().getStatusCode()));
-            Map<String, Object> responseInMap = parseResponseToMap(response);
+            String responseStr = EntityUtils.toString(response.getEntity());
+            Map<String, Object> responseInMap = parseResponseToMap(responseStr);
             if (condition.test(responseInMap)) {
-                return responseInMap;
+                if (responseInMap.get(MLTask.STATE_FIELD).toString().equals(MLTaskState.COMPLETED.toString())) {
+                    return responseInMap;
+                } else {
+                    fail("The task finally failed, response is: " + responseStr);
+                    return null;
+                }
             }
             logger.info("The " + i + "-th response: " + responseInMap.toString());
             Thread.sleep(DEFAULT_TASK_RESULT_QUERY_INTERVAL_IN_MILLISECOND);
@@ -199,7 +210,7 @@ public abstract class BaseAgentToolsIT extends OpenSearchSecureRestTestCase {
     protected Map<String, Object> waitTaskComplete(String taskId) {
         Predicate<Map<String, Object>> condition = responseInMap -> {
             String state = responseInMap.get(MLTask.STATE_FIELD).toString();
-            return state.equals(MLTaskState.COMPLETED.toString());
+            return state.equals(MLTaskState.COMPLETED.toString()) || state.equals(MLTaskState.FAILED.toString());
         };
         return waitResponseMeetingCondition("GET", "/_plugins/_ml/tasks/" + taskId, (String) null, condition);
     }
