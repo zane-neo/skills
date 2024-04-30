@@ -189,7 +189,29 @@ public abstract class BaseAgentToolsIT extends OpenSearchSecureRestTestCase {
         for (int i = 0; i < MAX_TASK_RESULT_QUERY_TIME_IN_SECOND; i++) {
             Response response = makeRequest(client(), method, endpoint, null, jsonEntity, null);
             assertEquals(RestStatus.OK, RestStatus.fromCode(response.getStatusLine().getStatusCode()));
+            Map<String, Object> responseInMap = parseResponseToMap(response);
+            if (condition.test(responseInMap)) {
+                return responseInMap;
+            }
+            logger.info("The " + i + "-th response: " + responseInMap.toString());
+            Thread.sleep(DEFAULT_TASK_RESULT_QUERY_INTERVAL_IN_MILLISECOND);
+        }
+        fail("The response failed to meet condition after " + MAX_TASK_RESULT_QUERY_TIME_IN_SECOND + " seconds.");
+        return null;
+    }
+
+    @SneakyThrows
+    protected Map<String, Object> waitResponseMeetingFinalCondition(
+        String method,
+        String endpoint,
+        String jsonEntity,
+        Predicate<Map<String, Object>> condition
+    ) {
+        for (int i = 0; i < MAX_TASK_RESULT_QUERY_TIME_IN_SECOND; i++) {
+            Response response = makeRequest(client(), method, endpoint, null, jsonEntity, null);
+            assertEquals(RestStatus.OK, RestStatus.fromCode(response.getStatusLine().getStatusCode()));
             String responseStr = EntityUtils.toString(response.getEntity());
+            logger.info("responseStr of wait task complete is:" + responseStr);
             Map<String, Object> responseInMap = parseResponseToMap(responseStr);
             if (condition.test(responseInMap)) {
                 if (responseInMap.get(MLTask.STATE_FIELD).toString().equals(MLTaskState.COMPLETED.toString())) {
@@ -212,7 +234,7 @@ public abstract class BaseAgentToolsIT extends OpenSearchSecureRestTestCase {
             String state = responseInMap.get(MLTask.STATE_FIELD).toString();
             return state.equals(MLTaskState.COMPLETED.toString()) || state.equals(MLTaskState.FAILED.toString());
         };
-        return waitResponseMeetingCondition("GET", "/_plugins/_ml/tasks/" + taskId, (String) null, condition);
+        return waitResponseMeetingFinalCondition("GET", "/_plugins/_ml/tasks/" + taskId, (String) null, condition);
     }
 
     // Register the model then deploy it. Returns the model_id until the model is deployed
