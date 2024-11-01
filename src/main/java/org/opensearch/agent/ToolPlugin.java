@@ -10,7 +10,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.google.common.collect.ImmutableList;
 import org.opensearch.agent.tools.CreateAnomalyDetectorTool;
+import org.opensearch.agent.tools.DynamicTool;
 import org.opensearch.agent.tools.LogPatternTool;
 import org.opensearch.agent.tools.NeuralSparseSearchTool;
 import org.opensearch.agent.tools.PPLTool;
@@ -21,27 +23,38 @@ import org.opensearch.agent.tools.SearchAnomalyResultsTool;
 import org.opensearch.agent.tools.SearchMonitorsTool;
 import org.opensearch.agent.tools.VectorDBTool;
 import org.opensearch.client.Client;
+import org.opensearch.client.node.NodeClient;
 import org.opensearch.cluster.metadata.IndexNameExpressionResolver;
+import org.opensearch.cluster.node.DiscoveryNodes;
 import org.opensearch.cluster.service.ClusterService;
+import org.opensearch.common.settings.ClusterSettings;
+import org.opensearch.common.settings.IndexScopedSettings;
+import org.opensearch.common.settings.Settings;
+import org.opensearch.common.settings.SettingsFilter;
 import org.opensearch.core.common.io.stream.NamedWriteableRegistry;
 import org.opensearch.core.xcontent.NamedXContentRegistry;
 import org.opensearch.env.Environment;
 import org.opensearch.env.NodeEnvironment;
 import org.opensearch.ml.common.spi.MLCommonsExtension;
 import org.opensearch.ml.common.spi.tools.Tool;
+import org.opensearch.plugins.ActionPlugin;
 import org.opensearch.plugins.Plugin;
 import org.opensearch.repositories.RepositoriesService;
+import org.opensearch.rest.RestController;
+import org.opensearch.rest.RestHandler;
+import org.opensearch.rest.ToolExecutor;
 import org.opensearch.script.ScriptService;
 import org.opensearch.threadpool.ThreadPool;
 import org.opensearch.watcher.ResourceWatcherService;
 
 import lombok.SneakyThrows;
 
-public class ToolPlugin extends Plugin implements MLCommonsExtension {
+public class ToolPlugin extends Plugin implements MLCommonsExtension, ActionPlugin {
 
     private Client client;
     private ClusterService clusterService;
     private NamedXContentRegistry xContentRegistry;
+    private NamedWriteableRegistry namedWriteableRegistry;
 
     @SneakyThrows
     @Override
@@ -61,16 +74,7 @@ public class ToolPlugin extends Plugin implements MLCommonsExtension {
         this.client = client;
         this.clusterService = clusterService;
         this.xContentRegistry = xContentRegistry;
-        PPLTool.Factory.getInstance().init(client);
-        NeuralSparseSearchTool.Factory.getInstance().init(client, xContentRegistry);
-        VectorDBTool.Factory.getInstance().init(client, xContentRegistry);
-        RAGTool.Factory.getInstance().init(client, xContentRegistry);
-        SearchAlertsTool.Factory.getInstance().init(client);
-        SearchAnomalyDetectorsTool.Factory.getInstance().init(client, namedWriteableRegistry);
-        SearchAnomalyResultsTool.Factory.getInstance().init(client, namedWriteableRegistry);
-        SearchMonitorsTool.Factory.getInstance().init(client);
-        CreateAnomalyDetectorTool.Factory.getInstance().init(client);
-        LogPatternTool.Factory.getInstance().init(client, xContentRegistry);
+        this.namedWriteableRegistry = namedWriteableRegistry;
         return Collections.emptyList();
     }
 
@@ -87,8 +91,33 @@ public class ToolPlugin extends Plugin implements MLCommonsExtension {
                 SearchAnomalyResultsTool.Factory.getInstance(),
                 SearchMonitorsTool.Factory.getInstance(),
                 CreateAnomalyDetectorTool.Factory.getInstance(),
-                LogPatternTool.Factory.getInstance()
+                LogPatternTool.Factory.getInstance(),
+                DynamicTool.Factory.getInstance()
             );
+    }
+
+    @Override
+    public List<RestHandler> getRestHandlers(
+        Settings settings,
+        RestController restController,
+        ClusterSettings clusterSettings,
+        IndexScopedSettings indexScopedSettings,
+        SettingsFilter settingsFilter,
+        IndexNameExpressionResolver indexNameExpressionResolver,
+        Supplier<DiscoveryNodes> nodesInCluster
+    ) {
+        PPLTool.Factory.getInstance().init(client);
+        NeuralSparseSearchTool.Factory.getInstance().init(client, xContentRegistry);
+        VectorDBTool.Factory.getInstance().init(client, xContentRegistry);
+        RAGTool.Factory.getInstance().init(client, xContentRegistry);
+        SearchAlertsTool.Factory.getInstance().init(client);
+        SearchAnomalyDetectorsTool.Factory.getInstance().init(client, namedWriteableRegistry);
+        SearchAnomalyResultsTool.Factory.getInstance().init(client, namedWriteableRegistry);
+        SearchMonitorsTool.Factory.getInstance().init(client);
+        CreateAnomalyDetectorTool.Factory.getInstance().init(client);
+        LogPatternTool.Factory.getInstance().init(client, xContentRegistry);
+        DynamicTool.Factory.getInstance().init(new ToolExecutor(restController, (NodeClient) client), xContentRegistry);
+        return ImmutableList.of();
     }
 
 }
