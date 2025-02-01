@@ -67,11 +67,11 @@ public class ToolPlugin extends Plugin implements MLCommonsExtension {
         VectorDBTool.Factory.getInstance().init(client, xContentRegistry);
         RAGTool.Factory.getInstance().init(client, xContentRegistry);
         SearchAlertsTool.Factory.getInstance().init(client);
-        SearchAnomalyDetectorsTool.Factory.getInstance().init(client, namedWriteableRegistry);
-        SearchAnomalyResultsTool.Factory.getInstance().init(client, namedWriteableRegistry);
+//        SearchAnomalyDetectorsTool.Factory.getInstance().init(client, namedWriteableRegistry);
+//        SearchAnomalyResultsTool.Factory.getInstance().init(client, namedWriteableRegistry);
         SearchMonitorsTool.Factory.getInstance().init(client);
         CreateAlertTool.Factory.getInstance().init(client);
-        CreateAnomalyDetectorTool.Factory.getInstance().init(client);
+//        CreateAnomalyDetectorTool.Factory.getInstance().init(client);
         LogPatternTool.Factory.getInstance().init(client, xContentRegistry);
         return Collections.emptyList();
     }
