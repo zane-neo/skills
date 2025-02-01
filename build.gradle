@@ -110,10 +110,10 @@ task addJarsToClasspath(type: Copy) {
     }
     into("$buildDir/classes")
 
-    from(fileTree(dir: adJarDirectory)) {
+    //from(fileTree(dir: adJarDirectory)) {
         //include "opensearch-anomaly-detection-${opensearch_build}.jar"
-    }
-    into("$buildDir/classes")
+    //}
+    //into("$buildDir/classes")
 
     // spark jar
     from(fileTree(dir: sparkDir)) {
