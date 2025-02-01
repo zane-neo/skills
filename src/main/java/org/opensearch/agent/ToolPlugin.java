@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import org.opensearch.agent.tools.CreateAlertTool;
-import org.opensearch.agent.tools.CreateAnomalyDetectorTool;
+//import org.opensearch.agent.tools.CreateAnomalyDetectorTool;
 import org.opensearch.agent.tools.LogPatternTool;
 import org.opensearch.agent.tools.NeuralSparseSearchTool;
 import org.opensearch.agent.tools.PPLTool;
 import org.opensearch.agent.tools.RAGTool;
 import org.opensearch.agent.tools.SearchAlertsTool;
-import org.opensearch.agent.tools.SearchAnomalyDetectorsTool;
-import org.opensearch.agent.tools.SearchAnomalyResultsTool;
+//import org.opensearch.agent.tools.SearchAnomalyDetectorsTool;
+//import org.opensearch.agent.tools.SearchAnomalyResultsTool;
 import org.opensearch.agent.tools.SearchMonitorsTool;
 import org.opensearch.agent.tools.VectorDBTool;
 import org.opensearch.client.Client;
@@ -85,11 +85,11 @@ public class ToolPlugin extends Plugin implements MLCommonsExtension {
                 VectorDBTool.Factory.getInstance(),
                 RAGTool.Factory.getInstance(),
                 SearchAlertsTool.Factory.getInstance(),
-                SearchAnomalyDetectorsTool.Factory.getInstance(),
-                SearchAnomalyResultsTool.Factory.getInstance(),
+//                SearchAnomalyDetectorsTool.Factory.getInstance(),
+//                SearchAnomalyResultsTool.Factory.getInstance(),
                 SearchMonitorsTool.Factory.getInstance(),
                 CreateAlertTool.Factory.getInstance(),
-                CreateAnomalyDetectorTool.Factory.getInstance(),
+//                CreateAnomalyDetectorTool.Factory.getInstance(),
                 LogPatternTool.Factory.getInstance()
             );
     }
