@@ -15,9 +15,9 @@ import org.apache.lucene.search.TotalHits;
 import org.mockito.Mockito;
 import org.opensearch.action.search.SearchResponse;
 import org.opensearch.action.search.SearchResponseSections;
-import org.opensearch.ad.model.ADTask;
-import org.opensearch.ad.model.AnomalyDetector;
-import org.opensearch.ad.transport.GetAnomalyDetectorResponse;
+//import org.opensearch.ad.model.ADTask;
+//import org.opensearch.ad.model.AnomalyDetector;
+//import org.opensearch.ad.transport.GetAnomalyDetectorResponse;
 import org.opensearch.common.xcontent.XContentType;
 import org.opensearch.core.common.bytes.BytesReference;
 import org.opensearch.core.xcontent.XContentBuilder;
@@ -41,18 +41,18 @@ public class TestHelpers {
         );
     }
 
-    public static GetAnomalyDetectorResponse generateGetAnomalyDetectorResponses(String[] detectorNames, String[] detectorStates) {
-        AnomalyDetector detector = Mockito.mock(AnomalyDetector.class);
-        // For each subsequent call to getId(), return the next detectorId in the array
-        when(detector.getName()).thenReturn(detectorNames[0], Arrays.copyOfRange(detectorNames, 1, detectorNames.length));
-        ADTask realtimeAdTask = Mockito.mock(ADTask.class);
-        // For each subsequent call to getState(), return the next detectorState in the array
-        when(realtimeAdTask.getState()).thenReturn(detectorStates[0], Arrays.copyOfRange(detectorStates, 1, detectorStates.length));
-        GetAnomalyDetectorResponse getDetectorProfileResponse = Mockito.mock(GetAnomalyDetectorResponse.class);
-        when(getDetectorProfileResponse.getRealtimeAdTask()).thenReturn(realtimeAdTask);
-        when(getDetectorProfileResponse.getDetector()).thenReturn(detector);
-        return getDetectorProfileResponse;
-    }
+//    public static GetAnomalyDetectorResponse generateGetAnomalyDetectorResponses(String[] detectorNames, String[] detectorStates) {
+//        AnomalyDetector detector = Mockito.mock(AnomalyDetector.class);
+//         For each subsequent call to getId(), return the next detectorId in the array
+//        when(detector.getName()).thenReturn(detectorNames[0], Arrays.copyOfRange(detectorNames, 1, detectorNames.length));
+//        ADTask realtimeAdTask = Mockito.mock(ADTask.class);
+//         For each subsequent call to getState(), return the next detectorState in the array
+//        when(realtimeAdTask.getState()).thenReturn(detectorStates[0], Arrays.copyOfRange(detectorStates, 1, detectorStates.length));
+//        GetAnomalyDetectorResponse getDetectorProfileResponse = Mockito.mock(GetAnomalyDetectorResponse.class);
+//        when(getDetectorProfileResponse.getRealtimeAdTask()).thenReturn(realtimeAdTask);
+//        when(getDetectorProfileResponse.getDetector()).thenReturn(detector);
+//        return getDetectorProfileResponse;
+//    }
 
     public static SearchHit generateSearchDetectorHit(String detectorName, String detectorId) throws IOException {
         XContentBuilder content = XContentBuilder.builder(XContentType.JSON.xContent());
