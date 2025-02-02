@@ -548,7 +548,7 @@ testClusters.integTest {
         setting("plugins.security.allow_default_init_securityindex", "true")
         setting("plugins.security.unsupported.inject_user.enabled", "true")
 
-        setting("plugins.security.authcz.admin_dn", "\n- CN=kirk,OU=client,O=client,L=test, C=de")
+        setting("plugins.security.authcz.admin_dn", "\n- CN=admin,OU=client,O=client,L=test, C=de")
         setting('plugins.security.restapi.roles_enabled', '["all_access", "security_rest_api_access"]')
         setting('plugins.security.system_indices.enabled', "true")
         setting('plugins.security.system_indices.indices', '[' +
