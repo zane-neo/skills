@@ -446,7 +446,7 @@ integTest {
         // If security is enabled, set is_https/user/password defaults
         // admin password is permissable here since the security plugin is manually configured using the default internal_users.yml configuration
         is_https = is_https == null ? "true" : is_https
-        user = user == null ? "admin" : user
+        user = user == null ? "plugin:admin" : user
         password = password == null ? "admin" : password
         System.setProperty("https", is_https)
         System.setProperty("user", user)
