@@ -553,7 +553,6 @@ testClusters.integTest {
         setting('plugins.security.system_indices.enabled', "true")
         setting('plugins.security.system_indices.indices', '[' +
                 '".plugins-ml-config", ' +
-                '".plugins-ml-connector", ' +
                 '".plugins-ml-model-group", ' +
                 '".plugins-ml-model", ".plugins-ml-task", ' +
                 '".plugins-ml-conversation-meta", ' +
