@@ -131,7 +131,7 @@ public abstract class OpenSearchSecureRestTestCase extends OpenSearchRestTestCas
 
     @After
     public void deleteExternalIndices() throws IOException {
-        final Response response = client().performRequest(new Request("GET", "/_cat/indices?format=json" + "&expand_wildcards=all"));
+        final Response response = adminClient().performRequest(new Request("GET", "/_cat/indices?format=json" + "&expand_wildcards=all"));
         try (
             final XContentParser parser = JsonXContent.jsonXContent
                 .createParser(
@@ -156,7 +156,7 @@ public abstract class OpenSearchSecureRestTestCase extends OpenSearchRestTestCas
                 .collect(Collectors.toList());
 
             for (final String indexName : externalIndices) {
-                adminClient().performRequest(new Request("DELETE", "/" + indexName));
+                adminadminClient().performRequest(new Request("DELETE", "/" + indexName));
             }
         }
     }

@@ -431,7 +431,7 @@ public class RAGToolTests {
         VectorDBTool queryTool = VectorDBTool.Factory.getInstance().create(params);
         RAGTool rAGtool2 = new RAGTool(client, TEST_XCONTENT_REGISTRY_FOR_NEURAL_QUERY, TEST_INFERENCE_MODEL_ID, true, queryTool);
 
-        assertEquals(rAGtool1.getClient(), rAGtool2.getClient());
+        assertEquals(rAGtool1.getadminClient(), rAGtool2.getadminClient());
         assertEquals(rAGtool1.getInferenceModelId(), rAGtool2.getInferenceModelId());
         assertEquals(rAGtool1.getName(), rAGtool2.getName());
         assertEquals(rAGtool1.getQueryTool().getDocSize(), rAGtool2.getQueryTool().getDocSize());
@@ -461,7 +461,7 @@ public class RAGToolTests {
         NeuralSparseSearchTool queryTool = NeuralSparseSearchTool.Factory.getInstance().create(params);
         RAGTool rAGtool2 = new RAGTool(client, TEST_XCONTENT_REGISTRY_FOR_NEURAL_QUERY, TEST_INFERENCE_MODEL_ID, true, queryTool);
 
-        assertEquals(rAGtool1.getClient(), rAGtool2.getClient());
+        assertEquals(rAGtool1.getadminClient(), rAGtool2.getadminClient());
         assertEquals(rAGtool1.getInferenceModelId(), rAGtool2.getInferenceModelId());
         assertEquals(rAGtool1.getName(), rAGtool2.getName());
         assertEquals(rAGtool1.getQueryTool().getDocSize(), rAGtool2.getQueryTool().getDocSize());
