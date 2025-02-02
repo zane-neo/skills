@@ -78,7 +78,7 @@ apply plugin: 'opensearch.testclusters'
 apply plugin: 'opensearch.pluginzip'
 
 def sqlJarDirectory = "$buildDir/dependencies/opensearch-sql-plugin"
-def jsJarDirectory = "$buildDir/dependencies/opensearch-job-scheduler"
+//def jsJarDirectory = "$buildDir/dependencies/opensearch-job-scheduler"
 //def adJarDirectory = "$buildDir/dependencies/opensearch-anomaly-detection"
 def sparkDir = "$buildDir/dependencies/spark"
 
@@ -105,10 +105,10 @@ task addJarsToClasspath(type: Copy) {
     }
     into("$buildDir/classes")
 
-    from(fileTree(dir: jsJarDirectory)) {
-        include "opensearch-job-scheduler-${opensearch_build}.jar"
-    }
-    into("$buildDir/classes")
+//    from(fileTree(dir: jsJarDirectory)) {
+//        include "opensearch-job-scheduler-${opensearch_build}.jar"
+//    }
+//    into("$buildDir/classes")
 
     //from(fileTree(dir: adJarDirectory)) {
         //include "opensearch-anomaly-detection-${opensearch_build}.jar"
@@ -152,7 +152,7 @@ dependencies {
 
     // Plugin dependencies
     compileOnly group: 'org.opensearch', name:'opensearch-ml-client', version: "${opensearch_build}"
-    compileOnly fileTree(dir: jsJarDirectory, include: ["opensearch-job-scheduler-${opensearch_build}.jar"])
+//    compileOnly fileTree(dir: jsJarDirectory, include: ["opensearch-job-scheduler-${opensearch_build}.jar"])
     //implementation fileTree(dir: adJarDirectory, include: ["opensearch-anomaly-detection-${opensearch_build}.jar"])
     implementation fileTree(dir: sqlJarDirectory, include: ["opensearch-sql-${opensearch_build}.jar", "ppl-${opensearch_build}.jar", "protocol-${opensearch_build}.jar"])
     implementation fileTree(dir: sparkDir, include: ["spark*.jar"])
@@ -167,9 +167,9 @@ dependencies {
     zipArchive group: 'org.opensearch.plugin', name:'opensearch-ml-plugin', version: "${opensearch_build}"
     //zipArchive group: 'org.opensearch.plugin', name:'opensearch-anomaly-detection', version: "${opensearch_build}"
     zipArchive group: 'org.opensearch.plugin', name:'opensearch-sql-plugin', version: "${opensearch_build}"
-    zipArchive group: 'org.opensearch.plugin', name:'opensearch-knn', version: "${opensearch_build}"
-    zipArchive group: 'org.opensearch.plugin', name:'neural-search', version: "${opensearch_build}"
-    zipArchive group: 'org.opensearch.plugin', name:'alerting', version: "${opensearch_build}"
+//    zipArchive group: 'org.opensearch.plugin', name:'opensearch-knn', version: "${opensearch_build}"
+//    zipArchive group: 'org.opensearch.plugin', name:'neural-search', version: "${opensearch_build}"
+//    zipArchive group: 'org.opensearch.plugin', name:'alerting', version: "${opensearch_build}"
     secureIntegTestPluginArchive group: 'org.opensearch.plugin', name:'opensearch-security', version: "${opensearch_build}"
 
     // Test dependencies
@@ -254,21 +254,21 @@ task extractSqlJar(type: Copy) {
     into sqlJarDirectory
 }
 
-task extractJsJar(type: Copy) {
-    mustRunAfter()
-    from(zipTree(configurations.zipArchive.find { it.name.startsWith("opensearch-job-scheduler")}))
-    into jsJarDirectory
-}
+//task extractJsJar(type: Copy) {
+//    mustRunAfter()
+//    from(zipTree(configurations.zipArchive.find { it.name.startsWith("opensearch-job-scheduler")}))
+//    into jsJarDirectory
+//}
 
-task extractAdJar(type: Copy) {
-    mustRunAfter()
-    //from(zipTree(configurations.zipArchive.find { it.name.startsWith("opensearch-anomaly-detection")}))
-    //into adJarDirectory
-}
+//task extractAdJar(type: Copy) {
+//    mustRunAfter()
+//    //from(zipTree(configurations.zipArchive.find { it.name.startsWith("opensearch-anomaly-detection")}))
+//    //into adJarDirectory
+//}
 
 tasks.addJarsToClasspath.dependsOn(extractSqlJar)
-tasks.addJarsToClasspath.dependsOn(extractJsJar)
-tasks.addJarsToClasspath.dependsOn(extractAdJar)
+//tasks.addJarsToClasspath.dependsOn(extractJsJar)
+//tasks.addJarsToClasspath.dependsOn(extractAdJar)
 tasks.addJarsToClasspath.dependsOn(addSparkJar)
 project.tasks.delombok.dependsOn(addJarsToClasspath)
 tasks.publishNebulaPublicationToMavenLocal.dependsOn ':generatePomFileForPluginZipPublication'
@@ -314,8 +314,8 @@ spotless {
 
 compileJava {
     dependsOn extractSqlJar
-    dependsOn extractJsJar
-    dependsOn extractAdJar
+//    dependsOn extractJsJar
+//    dependsOn extractAdJar
     dependsOn delombok
     options.compilerArgs.addAll(["-processor", 'lombok.launch.AnnotationProcessorHider$AnnotationProcessor'])
 }

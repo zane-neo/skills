@@ -10,17 +10,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.opensearch.agent.tools.CreateAlertTool;
+//import org.opensearch.agent.tools.CreateAlertTool;
 //import org.opensearch.agent.tools.CreateAnomalyDetectorTool;
-import org.opensearch.agent.tools.LogPatternTool;
-import org.opensearch.agent.tools.NeuralSparseSearchTool;
+//import org.opensearch.agent.tools.LogPatternTool;
+//import org.opensearch.agent.tools.NeuralSparseSearchTool;
 import org.opensearch.agent.tools.PPLTool;
-import org.opensearch.agent.tools.RAGTool;
-import org.opensearch.agent.tools.SearchAlertsTool;
+//import org.opensearch.agent.tools.RAGTool;
+//import org.opensearch.agent.tools.SearchAlertsTool;
 //import org.opensearch.agent.tools.SearchAnomalyDetectorsTool;
 //import org.opensearch.agent.tools.SearchAnomalyResultsTool;
-import org.opensearch.agent.tools.SearchMonitorsTool;
-import org.opensearch.agent.tools.VectorDBTool;
+//import org.opensearch.agent.tools.SearchMonitorsTool;
+//import org.opensearch.agent.tools.VectorDBTool;
 import org.opensearch.client.Client;
 import org.opensearch.cluster.metadata.IndexNameExpressionResolver;
 import org.opensearch.cluster.service.ClusterService;
@@ -63,16 +63,16 @@ public class ToolPlugin extends Plugin implements MLCommonsExtension {
         this.clusterService = clusterService;
         this.xContentRegistry = xContentRegistry;
         PPLTool.Factory.getInstance().init(client);
-        NeuralSparseSearchTool.Factory.getInstance().init(client, xContentRegistry);
-        VectorDBTool.Factory.getInstance().init(client, xContentRegistry);
-        RAGTool.Factory.getInstance().init(client, xContentRegistry);
-        SearchAlertsTool.Factory.getInstance().init(client);
+//        NeuralSparseSearchTool.Factory.getInstance().init(client, xContentRegistry);
+//        VectorDBTool.Factory.getInstance().init(client, xContentRegistry);
+//        RAGTool.Factory.getInstance().init(client, xContentRegistry);
+//        SearchAlertsTool.Factory.getInstance().init(client);
 //        SearchAnomalyDetectorsTool.Factory.getInstance().init(client, namedWriteableRegistry);
 //        SearchAnomalyResultsTool.Factory.getInstance().init(client, namedWriteableRegistry);
-        SearchMonitorsTool.Factory.getInstance().init(client);
-        CreateAlertTool.Factory.getInstance().init(client);
+//        SearchMonitorsTool.Factory.getInstance().init(client);
+//        CreateAlertTool.Factory.getInstance().init(client);
 //        CreateAnomalyDetectorTool.Factory.getInstance().init(client);
-        LogPatternTool.Factory.getInstance().init(client, xContentRegistry);
+//        LogPatternTool.Factory.getInstance().init(client, xContentRegistry);
         return Collections.emptyList();
     }
 
@@ -80,17 +80,17 @@ public class ToolPlugin extends Plugin implements MLCommonsExtension {
     public List<Tool.Factory<? extends Tool>> getToolFactories() {
         return List
             .of(
-                PPLTool.Factory.getInstance(),
-                NeuralSparseSearchTool.Factory.getInstance(),
-                VectorDBTool.Factory.getInstance(),
-                RAGTool.Factory.getInstance(),
-                SearchAlertsTool.Factory.getInstance(),
+                PPLTool.Factory.getInstance()
+//                NeuralSparseSearchTool.Factory.getInstance(),
+//                VectorDBTool.Factory.getInstance(),
+//                RAGTool.Factory.getInstance(),
+//                SearchAlertsTool.Factory.getInstance(),
 //                SearchAnomalyDetectorsTool.Factory.getInstance(),
 //                SearchAnomalyResultsTool.Factory.getInstance(),
-                SearchMonitorsTool.Factory.getInstance(),
-                CreateAlertTool.Factory.getInstance(),
+//                SearchMonitorsTool.Factory.getInstance(),
+//                CreateAlertTool.Factory.getInstance(),
 //                CreateAnomalyDetectorTool.Factory.getInstance(),
-                LogPatternTool.Factory.getInstance()
+//                LogPatternTool.Factory.getInstance()
             );
     }
 
