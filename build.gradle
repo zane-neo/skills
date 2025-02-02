@@ -513,9 +513,9 @@ testClusters.integTest {
             var creds = node.getCredentials()
             // admin password is permissable here since the security plugin is manually configured using the default internal_users.yml configuration
             if (creds.isEmpty()) {
-                creds.add(Map.of('username', 'admin', 'password', 'admin'))
+                creds.add(Map.of('username', 'plugin:admin', 'password', 'admin'))
             } else {
-                creds.get(0).putAll(Map.of('username', 'admin', 'password', 'admin'))
+                creds.get(0).putAll(Map.of('username', 'plugin:admin', 'password', 'admin'))
             }
         }
 
