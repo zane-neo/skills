@@ -384,7 +384,6 @@ public abstract class BaseAgentToolsIT extends OpenSearchSecureRestTestCase {
         if (headers != null) {
             headers.forEach(header -> options.addHeader(header.getName(), header.getValue()));
         }
-        options.addHeader("_opendistro_security_user", "plugin:skills");
         options.addHeader("Authorization", "Basic YWRtaW46YWRtaW4=");
         options.setWarningsHandler(strictDeprecationMode ? WarningsHandler.STRICT : WarningsHandler.PERMISSIVE);
         request.setOptions(options.build());
