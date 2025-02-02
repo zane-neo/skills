@@ -115,7 +115,7 @@ public abstract class BaseAgentToolsIT extends OpenSearchSecureRestTestCase {
     }
 
     protected String registerModel(String requestBody) {
-        Response response = makeRequest(adminadminClient(), "POST", "/_plugins/_ml/models/_register", null, requestBody, null);
+        Response response = makeRequest(adminClient()(), "POST", "/_plugins/_ml/models/_register", null, requestBody, null);
         assertEquals(RestStatus.OK, RestStatus.fromCode(response.getStatusLine().getStatusCode()));
         return parseFieldFromResponse(response, MLTask.TASK_ID_FIELD).toString();
     }
@@ -284,7 +284,7 @@ public abstract class BaseAgentToolsIT extends OpenSearchSecureRestTestCase {
                 .collect(Collectors.toList());
 
             for (final String indexName : externalIndices) {
-                Response deleteResponse = adminadminClient().performRequest(new Request("DELETE", "/" + indexName));
+                Response deleteResponse = adminClient()().performRequest(new Request("DELETE", "/" + indexName));
                 Map<String, Object> responseInMap = parseResponseToMap(deleteResponse);
                 assertEquals(
                     String.format(Locale.ROOT, "delete index %s failed with response: %s", indexName, gson.toJson(responseInMap)),
