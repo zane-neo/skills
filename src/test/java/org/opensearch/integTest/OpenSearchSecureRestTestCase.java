@@ -156,7 +156,7 @@ public abstract class OpenSearchSecureRestTestCase extends OpenSearchRestTestCas
                 .collect(Collectors.toList());
 
             for (final String indexName : externalIndices) {
-                adminClient()().performRequest(new Request("DELETE", "/" + indexName));
+                adminClient().performRequest(new Request("DELETE", "/" + indexName));
             }
         }
     }
